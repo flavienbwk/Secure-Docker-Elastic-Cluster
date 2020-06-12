@@ -1,0 +1,127 @@
+version: '3.2'
+
+services:
+
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+    volumes:
+      - "es01:/usr/share/elasticsearch/data"
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_PASSWORD: changeme
+      node.name: es01
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es02,es03
+      cluster.initial_master_nodes: es01,es02,es03
+      network.host: 0.0.0.0
+      xpack.license.self_generated.type: basic
+      xpack.monitoring.collection.enabled: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certificates/es01/es01.key
+      xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certificates/es01/es01.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: certificate 
+      xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certificates/es01/es01.crt
+      xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certificates/es01/es01.key
+      cluster.routing.allocation.disk.threshold_enabled: "true"
+      cluster.routing.allocation.disk.watermark.low: 93%
+      cluster.routing.allocation.disk.watermark.high: 95%
+    depends_on:
+      - es02
+      - es03
+    ulimits: 
+      memlock:
+        soft: 262144
+        hard: 500000
+
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+    volumes:
+      - "es02:/usr/share/elasticsearch/data"
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_PASSWORD: changeme
+      node.name: es02
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es01,es03
+      cluster.initial_master_nodes: es01,es02,es03
+      xpack.license.self_generated.type: basic
+      xpack.monitoring.collection.enabled: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certificates/es02/es02.key
+      xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certificates/es02/es02.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: certificate 
+      xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certificates/es02/es02.crt
+      xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certificates/es02/es02.key
+      cluster.routing.allocation.disk.threshold_enabled: "true"
+      cluster.routing.allocation.disk.watermark.low: 93%
+      cluster.routing.allocation.disk.watermark.high: 95%
+    ulimits: 
+      memlock:
+        soft: 262144
+        hard: 500000
+
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+    volumes:
+      - "es03:/usr/share/elasticsearch/data"
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_PASSWORD: changeme
+      node.name: es03
+      cluster.name: es-docker-cluster
+      discovery.seed_hosts: es01,es02
+      cluster.initial_master_nodes: es01,es02,es03
+      xpack.license.self_generated.type: basic
+      xpack.monitoring.collection.enabled: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certificates/es03/es03.key
+      xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certificates/es03/es03.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: certificate 
+      xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certificates/es03/es03.crt
+      xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certificates/es03/es03.key
+      cluster.routing.allocation.disk.threshold_enabled: "true"
+      cluster.routing.allocation.disk.watermark.low: 93%
+      cluster.routing.allocation.disk.watermark.high: 95%
+    ulimits: 
+      memlock:
+        soft: 262144
+        hard: 500000
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.1
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es01
+
+volumes:
+  es01:
+    driver: local
+  es02:
+    driver: local
+  es03:
+    driver: local
