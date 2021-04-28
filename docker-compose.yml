@@ -127,6 +127,7 @@ services:
   #     ent_search.auth.source: elasticsearch-native # elasticsearch-based users
   #     ent_search.ssl.enabled: "true"
   #     ent_search.ssl.keystore.path: "/usr/share/elasticsearch/config/certificates/enterprise_search/enterprise_search.p12"
+  #     ent_search.ssl.keystore.password: changeme # defined in create-certs.yml
   #     elasticsearch.username: elastic
   #     elasticsearch.password: changeme
   #     elasticsearch.host: "https://es01:9200"
