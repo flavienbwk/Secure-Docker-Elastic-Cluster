@@ -4,19 +4,22 @@ services:
 
     create_certs:
         container_name: create_certs
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
         command: >
             bash -c '
-
-            # Generating PEM certificates (ElasticSearch nodes and Kibana);
+            if [[ ! -f /certs/ca.zip ]]; then
+                # Generating CA certificate
+                bin/elasticsearch-certutil ca --silent --pem -out /certs/ca.zip;
+                unzip /certs/ca.zip -d /certs;
+            fi;
             if [[ ! -f /certs/pem.zip ]]; then
-                bin/elasticsearch-certutil cert --silent --keep-ca-key --pem --in config/certificates/pem.yml -out /certs/pem.zip;
+                # Generating PEM certificates (ElasticSearch nodes and Kibana)
+                bin/elasticsearch-certutil cert --silent --pem --ca-cert "/certs/ca/ca.crt" --ca-key "/certs/ca/ca.key" --in config/certificates/pem.yml -out /certs/pem.zip;
                 unzip /certs/pem.zip -d /certs;
             fi;
-
-            # Generating PKCS#12 certificates (Enterprise Search);
             if [[ ! -f /certs/pkcs_12.zip ]]; then
-                bin/elasticsearch-certutil cert --silent --pass "" --ca-cert "/certs/ca/ca.crt" --ca-key "/certs/ca/ca.key" --in config/certificates/pkcs_12.yml -out /certs/pkcs_12.zip;
+                # Generating PKCS#12 certificates (Enterprise Search)
+                bin/elasticsearch-certutil cert --silent --pass "changeme" --ca-cert "/certs/ca/ca.crt" --ca-key "/certs/ca/ca.key" --in config/certificates/pkcs_12.yml -out /certs/pkcs_12.zip;
                 unzip /certs/pkcs_12.zip -d /certs;
             fi;
             '

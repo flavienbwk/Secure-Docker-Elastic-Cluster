@@ -3,7 +3,7 @@ version: '3.2'
 services:
 
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     volumes:
       - "es01:/usr/share/elasticsearch/data"
       - "./certs:/usr/share/elasticsearch/config/certificates:ro"
@@ -41,7 +41,7 @@ services:
         hard: 500000
 
   es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     volumes:
       - "es02:/usr/share/elasticsearch/data"
       - "./certs:/usr/share/elasticsearch/config/certificates:ro"
@@ -73,7 +73,7 @@ services:
         hard: 500000
 
   es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
     volumes:
       - "es03:/usr/share/elasticsearch/data"
       - "./certs:/usr/share/elasticsearch/config/certificates:ro"
@@ -105,7 +105,7 @@ services:
         hard: 500000
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.0
+    image: docker.elastic.co/kibana/kibana:7.12.0
     volumes:
       - type: bind
         source: ./kibana/config/kibana.yml
@@ -118,7 +118,7 @@ services:
       - es01
 
   # enterprise_search:
-  #   image: docker.elastic.co/enterprise-search/enterprise-search:7.10.0
+  #   image: docker.elastic.co/enterprise-search/enterprise-search:7.12.0
   #   restart: always
   #   environment:
   #     JAVA_OPTS: "-Xms512m -Xmx512m"
