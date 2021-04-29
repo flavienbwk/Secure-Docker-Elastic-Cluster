@@ -1,4 +1,4 @@
-# Secure Docker ELK cluster
+# Secure Docker Elastic cluster
 
 An end-to-end fully secure Elasticsearch cluster (of 3 Elasticsearch instances) with Kibana and run by Docker. Using official images. Ever dreamed of the following ?
 
