@@ -26,7 +26,9 @@ Access Kibana through [https://localhost:5601](https://localhost:5601)
 
 > Default username is `elastic` and password is `changeme`
 
-## Users management
+## User management
+
+User management can be performed both through the UI and from API calls. This chapter focuses on API call examples.
 
 To create a new user `ingest` with password `changeme` :
 
